@@ -1,8 +1,10 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -16,9 +18,22 @@ func msgHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	var dir string
+
+	flag.StringVar(&dir, "dir", "public/", "the directory to serve files from. Defaults to the current dir")
+	flag.Parse()
 	r := mux.NewRouter()
 
-	r.HandleFunc("/books/{title}/page/{page}", msgHandle)
+	// This will serve files under http://localhost:8000/static/<filename>
+	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(dir))))
 
-	http.ListenAndServe(":8080", r)
+	srv := &http.Server{
+		Handler: r,
+		Addr:    "127.0.0.1:8000",
+		// Good practice: enforce timeouts for servers you create!
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	srv.ListenAndServe()
 }
