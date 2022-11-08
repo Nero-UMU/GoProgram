@@ -24,7 +24,7 @@ func mixColumns(a *[16]int) {
 func mixColumnsP_1(a *[16]int) {
 	b := make([]int, 16)
 	for j := 0; j < 4; j++ {
-		b[j] = (polyMulti(0x0e, a[j*4]) ^ polyMulti(0x0b, a[1+j*4]) ^ polyMulti(0x0d, a[2+j*4]) ^ polyMulti(0x09, a[3+j*4])) % 256
+		b[4*j] = (polyMulti(0x0e, a[j*4]) ^ polyMulti(0x0b, a[1+j*4]) ^ polyMulti(0x0d, a[2+j*4]) ^ polyMulti(0x09, a[3+j*4])) % 256
 	}
 	for j := 0; j < 4; j++ {
 		b[4*j+1] = (polyMulti(0x09, a[j*4]) ^ polyMulti(0x0e, a[1+j*4]) ^ polyMulti(0x0b, a[2+j*4]) ^ polyMulti(0x0d, a[3+j*4])) % 256
