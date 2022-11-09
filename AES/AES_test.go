@@ -43,3 +43,12 @@ func TestAES(t *testing.T) {
 	}
 	fmt.Println()
 }
+
+func TestOpenFile(t *testing.T) {
+	filePath := "/home/nero/GoProgram/AES/plainText.txt"
+	keyPath := "/home/nero/GoProgram/AES/key.txt"
+	dePath := "/home/nero/GoProgram/AES/cipher.txt"
+	key := getKey(&keyPath)
+	encryptFile(&filePath, &key)
+	decryptFile(&dePath, &key)
+}
