@@ -4,12 +4,14 @@ import (
 	"blog-service/global"
 	"blog-service/internal/model"
 	"blog-service/internal/routers"
+	"blog-service/pkg/logger"
 	"blog-service/pkg/setting"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func init() {
@@ -20,6 +22,10 @@ func init() {
 	err = setupDBEngine()
 	if err != nil {
 		log.Fatalf("init.setupDBEngine err: %v", err)
+	}
+	err = setupLogger()
+	if err != nil {
+		log.Fatalf("init.setupLogger err: %v", err)
 	}
 }
 
@@ -54,6 +60,20 @@ func setupSetting() error {
 	return nil
 }
 
+func setupLogger() error {
+	fileName := global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + global.AppSetting.LogFileExt
+	global.Logger = logger.NewLogger(&lumberjack.Logger{
+		Filename:  fileName,
+		MaxSize:   600,
+		MaxAge:    10,
+		LocalTime: true,
+	}, "", log.LstdFlags).WithCaller(2)
+	return nil
+}
+
+// @title 博客系统
+// @version 1.0
+// @description Go 语言之旅做的博客系统项目
 func main() {
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
